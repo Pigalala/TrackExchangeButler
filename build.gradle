@@ -1,0 +1,44 @@
+plugins {
+    id 'java'
+    id 'com.gradleup.shadow' version '9.0.0-beta8'
+}
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'io.javalin:javalin:6.6.0'
+    implementation 'ch.qos.logback:logback-classic:1.5.18'
+    implementation 'com.google.code.gson:gson:2.13.0'
+}
+
+build {
+    dependsOn tasks.named('shadowJar')
+}
+
+jar {
+    manifest {
+        attributes 'Class-Path': configurations.runtimeClasspath.collect { it.getName() }.join(' '), 'Main-Class': 'me.pigalala.trackexchange.butler.Main'
+    }
+}
+
+java {
+    def javaVersion = JavaVersion.toVersion(21)
+    sourceCompatibility = javaVersion
+    targetCompatibility = javaVersion
+    if (JavaVersion.current() < javaVersion) {
+        toolchain.languageVersion = JavaLanguageVersion.of(21)
+    }
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release = 21
+}
+
+tasks.named('shadowJar', com.github.jengelman.gradle.plugins.shadow.tasks.ShadowJar) {
+    archiveClassifier = ''
+    archiveVersion = ''
+}
+

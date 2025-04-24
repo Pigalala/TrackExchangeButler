@@ -1,0 +1,14 @@
+<configuration>
+  <statusListener class="ch.qos.logback.core.status.NopStatusListener" />
+  <conversionRule conversionWord="color" converterClass="me.pigalala.trackexchange.butler.logging.LoggerConvertor" />
+  
+  <appender name="STDOUT" class="ch.qos.logback.core.ConsoleAppender">
+    <encoder>
+      <pattern>[%d{HH:mm:ss.SSS}] [%-5level] %color%msg%n%white</pattern>
+    </encoder>
+  </appender>
+
+  <root level="INFO">
+    <appender-ref ref="STDOUT" />
+  </root>
+</configuration>
