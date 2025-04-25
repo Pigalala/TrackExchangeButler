@@ -97,6 +97,8 @@ public final class WebServer {
             trackName += ".trackexchange";
         }
 
+        Main.logger().info("Preparing to upload {}", trackName);
+
         Path trackExchangeFile = Path.of("trackexchange", trackName);
         try {
             Files.write(trackExchangeFile, Base64.getDecoder().decode(body.get("track_exchange").getAsString()));
@@ -105,6 +107,7 @@ public final class WebServer {
         }
 
         ok(ctx);
+        Main.logger().info("Successfully uploaded {}", trackName);
     }
 
     public void stop() {
