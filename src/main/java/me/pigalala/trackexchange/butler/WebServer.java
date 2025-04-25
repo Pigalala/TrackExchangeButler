@@ -9,6 +9,8 @@ import io.javalin.http.HttpStatus;
 import io.javalin.util.JavalinLogger;
 import me.pigalala.trackexchange.butler.exception.UnauthorizedException;
 
+import java.io.BufferedInputStream;
+import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Base64;
@@ -90,7 +92,12 @@ public final class WebServer {
     private void handleUploadFile(Context ctx) {
         checkAuthorized(ctx);
 
-        JsonObject body = JsonParser.parseString(ctx.body()).getAsJsonObject();
+        JsonObject body;
+        try (var in = new BufferedInputStream(ctx.bodyInputStream())) {
+            body = JsonParser.parseString(new String(in.readAllBytes())).getAsJsonObject();
+        } catch (IOException e) {
+            throw new RuntimeException("Could not read body");
+        }
 
         String trackName = body.get("name").getAsString();
         if (!trackName.endsWith(".trackexchange")) {
